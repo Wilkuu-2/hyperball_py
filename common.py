@@ -3,9 +3,9 @@ from typing import List, Self
 class FreqDistribution:
     __slots__ = ('arr')
     def __init__(self, initial: int):
-        self.arr: List[int] = [0 for _ in range(initial)]
+        self.arr: List[int | float] = [0 for _ in range(initial)]
     
-    def add(self, n: int, c: int = 1): 
+    def add(self, n: int, c: int|float = 1): 
         self._resize(n+1)
         self.arr[n] += c
 
@@ -30,12 +30,16 @@ class FreqDistribution:
 
         return s / c
 
-    def count(self) -> int: 
-        return sum(self.arr)
+    def count(self) -> int| float: 
+        s = 0
+        for x in self.arr:
+            s+= x 
+        return s 
 
     def half(self): 
         for i in range(len(self.arr)): 
-            self.arr[i] = self.arr[i] >> 1 
+            self.arr[i] = self.arr[i] / 2 #type: ignore 
+
     def __len__(self): 
         return len(self.arr)
 

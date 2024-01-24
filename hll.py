@@ -1,6 +1,6 @@
 from hashlib import sha1; 
 import math
-from typing import Tuple 
+from typing import Self, Tuple 
 import random 
 
 twopow32 = 1 << 32 
@@ -36,31 +36,37 @@ class HLLCounter:
 
         zeroes = self.M.count(0)
         if est < 2.5 * self.m and zeroes > 0: 
-            print("Correcting low range")
             est = self.m * math.log(self.m/zeroes)
         elif est > 1/30 * twopow32:  
-            print("Correcting high range")
             est = self.m * math.log(1.0 - est/twopow32)
 
         return est 
-     
-
-def union(x, y) -> Tuple[HLLCounter, bool]:
-    assert x.b == y.b, "UNION: Both counters need the same precision"
-    is_changed = False
     
-    u = HLLCounter(x.b)
-    for j in range(0,u.m):
-        xMj = x.M[j] 
-        yMj = y.M[j]
+    def copy(self): 
+        out = HLLCounter(self.b)
+        out.M = self.M.copy()
+        return out
 
-        if xMj != yMj:
-            u.M[j] = max(xMj, yMj)
-            is_changed = True
-        else:
-            u.M[j] = xMj
+    def union_ip(self, y) -> bool: 
+        assert self.b == y.b, "UNION: Both counters need the same precision"
+        is_changed = False
 
-    return u, is_changed
+        for j in range(0,self.m):
+            xMj = self.M[j] 
+            yMj = y.M[j]
+
+            if xMj != yMj:
+                self.M[j] = max(xMj, yMj)
+                is_changed = True
+            else:
+                self.M[j] = xMj
+
+        return is_changed
+    
+    def __repr__(self) -> str:
+        return f"HLLCounter{self.b}"
+
+
 
 # Get the correcting factor from the paper 
 def get_alpha(m): 
@@ -91,10 +97,10 @@ def test():
 
     print(d.getE()) 
 
-    u,c = union(c,d)
-    assert c, "TEST_UNION: The union should yield a changed counter" 
+    ch = d.union_ip(c)
+    assert ch, "TEST_UNION: The union should yield a changed counter" 
 
-    print(u.getE())
+    print(d.getE())
 
     
 
