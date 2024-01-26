@@ -30,10 +30,12 @@ class HLLCounter:
 
     
     def getE(self) -> float: 
+        """ Calculates estimated cardinality"""
         # Calculate raw estimate
         est = sum([1.0 / float(1 << Mj) for Mj in self.M])
         est = get_alpha(self.m) * (self.m * self.m) / est 
 
+        # Corections 
         zeroes = self.M.count(0)
         if est < 2.5 * self.m and zeroes > 0: 
             est = self.m * math.log(self.m/zeroes)

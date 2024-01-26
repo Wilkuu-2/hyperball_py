@@ -1,6 +1,7 @@
 from typing import List, Self
 
 class FreqDistribution:
+    """Just a counter that counts frequencies of certain numbers"""
     __slots__ = ('arr')
     def __init__(self, initial: int):
         self.arr: List[int | float] = [0 for _ in range(initial)]

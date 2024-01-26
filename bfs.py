@@ -41,11 +41,6 @@ def BFS_DistanceDistrParallel(G: networkx.Graph) -> FreqDistribution:
 
     return c
 
-
-
-
-
-
 def test(): 
     print("GNP graph: The answer should be around 3")
     g = networkx.fast_gnp_random_graph(2000,0.32, seed=4209)
