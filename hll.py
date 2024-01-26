@@ -10,7 +10,7 @@ class HLLCounter:
     def __init__(self, b): 
         self.b: int = b
         self.m: int = 2 ** b 
-        self.M = [0 for _ in range(0,self.m)]
+        self.M = bytearray([0 for _ in range(0,self.m)])
 
     def add(self, v: bytes):
         right_offset = 63 - self.b 

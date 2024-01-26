@@ -2,6 +2,10 @@ from typing import Set
 import networkx 
 from common import FreqDistribution 
 from collections import deque
+import multiprocessing 
+
+def BFS_GetDDSingleTuple(g) ->FreqDistribution:
+    return BFS_GetDDSingle(g[0], g[1])
 
 def BFS_GetDDSingle(G: networkx.Graph, s: str) -> FreqDistribution: 
     c = FreqDistribution(32) 
@@ -26,10 +30,26 @@ def BFS_DistanceDistr(G: networkx.Graph) -> FreqDistribution:
     c.half()
     return c
 
+def BFS_DistanceDistrParallel(G: networkx.Graph) -> FreqDistribution: 
+    pool = multiprocessing.Pool()
+    distrs = pool.map(BFS_GetDDSingleTuple,
+                      [(G,n) for n in list(G.nodes())])
+    
+    c = FreqDistribution(32)
+    for d in distrs:
+        c.merge_ip(d)
+
+    return c
+
+
+
+
+
+
 def test(): 
     print("GNP graph: The answer should be around 3")
-    g = networkx.fast_gnp_random_graph(100,0.32, seed=4209)
-    d = BFS_DistanceDistr(g)
+    g = networkx.fast_gnp_random_graph(2000,0.32, seed=4209)
+    d = BFS_DistanceDistrParallel(g)
     print(d.arr)
     print(d.count())
     print(d.avg())

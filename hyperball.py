@@ -101,7 +101,7 @@ class HyperBallDistances():
         
         counters_changed = True
         while counters_changed: 
-            print(f"\rIteration #{t}", end='\n')
+            #print(f"\rIteration #{t}", end='\n')
             counters_changed = False 
 
             pl = [self.create_params(v) for v in self.G.nodes()] 
@@ -124,7 +124,7 @@ def list_subset_copy(C, ni) -> List[HLLCounter]:
 
 
 def process_node(params: NodeProcessParams) -> NodeProcessOutput:
-    print(f"\rnode: #{params.i}", end='')
+    #print(f"\rnode: #{params.i}", end='')
     if not params.de.changed:
         return NodeProcessOutput(params.i, params.de,0)
     
@@ -174,45 +174,11 @@ def test():
     print(d.count())
     print(d.avg())
 
-def hyperball_task(g): 
-    def run():
-        from __main__ import HyperBallDistances
-        h = HyperBallDistances(12, g)
-        h.run_parallel() 
-        #h.run() 
-        print("RESULT: ", h.distr.avg())
-    return run 
-
-def bfs_task(g):
-    def run():
-        from bfs import BFS_DistanceDistr 
-        d = BFS_DistanceDistr(g)
-        print("RESULT: ", d.avg())
-    
-    return run 
-
-def profile(): 
-    import timeit;
-    NNODES = 3000 
-    P      = 0.232
-    SEED   = 5684 
-
-
-    print(f"GNP graph: {NNODES} nodes, P={P}, SEED={SEED}")
-    g = networkx.fast_gnp_random_graph(NNODES,P, seed=SEED)
-
-    print(" ---------- HyperBall: ")
-    t = timeit.Timer(hyperball_task(g))
-    print("Time:",t.timeit(1))
-
-    print(" ---------- BFS: ")
-    t = timeit.Timer(bfs_task(g))
-    print("Time:",t.timeit(1))
 
 
 
 if __name__ == "__main__":
-    profile()
+    test()
             
             
 
